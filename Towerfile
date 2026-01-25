@@ -1,0 +1,28 @@
+[app]
+name = "compliance-check"
+script = "./compliance.py"
+source = [
+    "./compliance.py",
+    "./requirements.txt",
+    "./ground_truth.json"
+]
+
+[[parameters]]
+name = "address"
+default = "Berlin, Germany"
+
+[[parameters]]
+name = "property_info"
+default = "Sample property listing"
+
+[[parameters]]
+name = "callback_url"
+default = ""
+
+[[parameters]]
+name = "callback_secret"
+default = ""
+
+[[parameters]]
+name = "run_id"
+default = ""

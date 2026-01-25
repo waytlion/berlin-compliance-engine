@@ -1,0 +1,138 @@
+{
+    "compliance_rules_berlin": {
+        "meta": {
+            "jurisdiction": "Berlin, Germany",
+            "laws": [
+                "ZwVbG",
+                "ZwVbVO"
+            ],
+            "last_updated": "2026-01-25"
+        },
+        "categories": [
+            {
+                "id": "registration_id_check",
+                "name": "Public Registration Display",
+                "description": "Every listing must display a valid registration number (Registriernummer) from the district office.",
+                "legal_ref": "ZwVbG § 5a Abs. 1",
+                "binary_check": {
+                    "input_field": "registration_number_present",
+                    "condition": "true",
+                    "failure_message": "CRITICAL: Listing is missing the mandatory 'Registriernummer'. This is an immediate administrative offense."
+                },
+                "agent_instructions": {
+                    "if_compliant": "Verify format is 'ZE/ZA/...' + digits. Confirm valid.",
+                    "if_violated": {
+                        "action": "provide_document_link",
+                        "document_name": "Registriernummer Application (Main Residence)",
+                        "url": "https://service.berlin.de/dienstleistung/328191/",
+                        "user_message": "You must apply for a registration number immediately. Use this link for primary residences."
+                    }
+                }
+            },
+            {
+                "id": "primary_residence_share",
+                "name": "Primary Residence Sharing (Homesharing)",
+                "description": "If the host lives in the unit, they can rent out space without a permit ONLY if they occupy more than 50% of the space themselves.",
+                "legal_ref": "ZwVbG § 2 Abs. 2 Nr. 5",
+                "binary_check": {
+                    "input_field": "rented_area_less_than_50_percent",
+                    "condition": "true",
+                    "context_dependency": "only_if_primary_residence",
+                    "failure_message": "If this is a primary residence, renting out >50% of the space requires a full misappropriation permit."
+                },
+                "agent_instructions": {
+                    "if_compliant": "No further action needed. Keep rental area under 50%.",
+                    "if_violated": {
+                        "action": "provide_document_link",
+                        "document_name": "Antrag auf Genehmigung einer Zweckentfremdung",
+                        "url": "https://service.berlin.de/dienstleistung/326217/",
+                        "form_url": "https://www.berlin.de/sen/sbw/_assets/service/formular-center/bereich-wohnen/bauwohn606.pdf",
+                        "user_message": "You are renting out more than 50% of your home. You must download and fill out this specific application form."
+                    }
+                }
+            },
+            {
+                "id": "second_home_90_days",
+                "name": "Second Home Time Limit",
+                "description": "Secondary residences (Nebenwohnungen) can only be rented out for short-term stays for a maximum of 90 days per year.",
+                "legal_ref": "ZwVbG § 3 Abs. 3 Nr. 3",
+                "binary_check": {
+                    "input_field": "rental_days_le_90",
+                    "condition": "true",
+                    "context_dependency": "only_if_second_home",
+                    "failure_message": "Renting a second home for more than 90 days/year is prohibited without a hardship permit."
+                },
+                "agent_instructions": {
+                    "if_compliant": "Monitor rental days to stay under 90.",
+                    "if_violated": {
+                        "action": "provide_document_link",
+                        "document_name": "Antrag auf Genehmigung (Härtefall)",
+                        "url": "https://service.berlin.de/dienstleistung/326217/",
+                        "form_url": "https://www.berlin.de/sen/sbw/_assets/service/formular-center/bereich-wohnen/bauwohn606.pdf",
+                        "user_message": "Renting >90 days requires a Hardship Permit. Please complete the attached PDF application."
+                    }
+                }
+            },
+            {
+                "id": "vacancy_limit",
+                "name": "Vacancy Limit (Leerstand)",
+                "description": "Residential units cannot remain empty (vacant) for longer than 3 months.",
+                "legal_ref": "ZwVbG § 2 Abs. 1 Nr. 4",
+                "binary_check": {
+                    "input_field": "vacancy_lt_3_months",
+                    "condition": "true",
+                    "failure_message": "Vacancy exceeds the 3-month legal limit. Justification (e.g., renovation) is required."
+                },
+                "agent_instructions": {
+                    "if_compliant": "Ensure occupancy resumes within 3 months.",
+                    "if_violated": {
+                        "action": "provide_document_link",
+                        "document_name": "Anzeige von leerstehendem Wohnraum",
+                        "url": "https://service.berlin.de/dienstleistung/326217/",
+                        "user_message": "Your property has been empty too long. Notify the district office immediately."
+                    }
+                }
+            },
+            {
+                "id": "commercial_use",
+                "name": "Commercial Misappropriation",
+                "description": "Using residential space for purely commercial purposes (e.g., permanent office, medical practice) is banned.",
+                "legal_ref": "ZwVbG § 2 Abs. 1 Nr. 2",
+                "binary_check": {
+                    "input_field": "is_residential_usage",
+                    "condition": "true",
+                    "failure_message": "Property is being used for commercial purposes without a permit."
+                },
+                "agent_instructions": {
+                    "if_compliant": "Ensure usage remains residential.",
+                    "if_violated": {
+                        "action": "provide_document_link",
+                        "document_name": "Antrag auf Zweckentfremdung (Gewerbe)",
+                        "url": "https://service.berlin.de/dienstleistung/326217/",
+                        "form_url": "https://www.berlin.de/sen/sbw/_assets/service/formular-center/bereich-wohnen/bauwohn606.pdf",
+                        "user_message": "Commercial use is strictly regulated. Use this form to apply for a conversion permit."
+                    }
+                }
+            },
+            {
+                "id": "demolition_modification",
+                "name": "Structural Integrity",
+                "description": "Modifications that make the unit uninhabitable (e.g., removing kitchen/bath) are prohibited.",
+                "legal_ref": "ZwVbG § 2 Abs. 1 Nr. 3",
+                "binary_check": {
+                    "input_field": "is_habitable",
+                    "condition": "true",
+                    "failure_message": "Structural changes have rendered the unit uninhabitable."
+                },
+                "agent_instructions": {
+                    "if_compliant": "Maintain habitability standards.",
+                    "if_violated": {
+                        "action": "ask_user_input",
+                        "question": "Please describe the renovations. Are they temporary?",
+                        "user_message": "Making a unit uninhabitable is illegal. If this is a renovation, verify the timeline."
+                    }
+                }
+            }
+        ]
+    }
+}
