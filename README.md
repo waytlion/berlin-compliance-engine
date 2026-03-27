@@ -1,4 +1,4 @@
-# Berlin Compliance Engine (Tower App)
+# Hackaton Berlin 2026 - Berlin Compliance Engine (Tower App)
 
 This is the backend for the "Berlin Short-Term Rental Compliance" tool. It runs on the [Tower.dev](https://tower.dev) platform and uses OpenAI (GPT-4o) to analyze property listings against local regulations (`ZwVbG`, `ZwVbV`).
 
